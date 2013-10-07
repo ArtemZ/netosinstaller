@@ -10,8 +10,8 @@
 # bits.
 #
 # By default this script does nothing.
-dhclient eth1 -r
-dhclient eth1
+#dhclient eth1 -r
+#dhclient eth1
 ETH_IP=`ifconfig eth1|grep inet|head -1|sed 's/\:/ /'|awk '{print $3}'`
 if [ -z "$ETH_IP" ]; then
 	logger "No ips has been assigned to eth1"
