@@ -17,6 +17,6 @@ EOF
 echo $SWAP_SECTORS
 echo $FREE_SECTORS
 echo "$PARTITIONS"
-if [ TEST -ne 1 ]; then
+if [ "$TEST" -ne 1 ]; then
 	echo "$PARTITIONS" | sfdisk /dev/sda
 fi
