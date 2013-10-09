@@ -5,11 +5,11 @@
 DISTR_SERVER=192.168.1.100
 ETH0_MAC=`cat /sys/class/net/eth0/address`
 ETH1_MAC=`cat /sys/class/net/eth1/address`
-
+DISTR_URL="http://$DISTR_SERVER:4567/config/$ETH1_MAC?username=artemz&password=123456"
 wget http://$DISTR_SERVER/installer/disk-formatter.sh -O /tmp/disk_formatter.sh
 . /tmp/disk_formatter.sh
 #Server_IP=`ifconfig eth1|grep inet|head -1|sed 's/\:/ /'|awk '{print $3}'`
-DISTR_CONFIG_STATUS=`curl -s --head -w %{http_code} 'http://$DISTR_SERVER:4567/config/$ETH1_MAC?username=&password=' -o /dev/null`
+DISTR_CONFIG_STATUS=`curl -s --head -w %{http_code} $DISTR_URL -o /dev/null`
 if [ "$DISTR_CONFIG_STATUS" == "403" ]; then
 	logger "No access to distr server"
 	exit 1;
