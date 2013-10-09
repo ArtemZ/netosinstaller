@@ -1,5 +1,6 @@
 #/bin/sh
 SWAP_GB=8
+TEST=0
 SECTOR_SIZE=`cat /sys/block/sda/queue/hw_sector_size`
 SECTOR_CT=`cat /sys/block/sda/size`
 SWAP_SECTORS=$(echo "($SWAP_GB * 1024 * 1024 * 1024) / $SECTOR_SIZE" | bc )
@@ -16,3 +17,6 @@ EOF
 echo $SWAP_SECTORS
 echo $FREE_SECTORS
 echo "$PARTITIONS"
+if [ TEST -ne 1 ]; then
+	echo "$PARTITIONS" | sfdisk /dev/sda
+fi
