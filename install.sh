@@ -41,11 +41,6 @@ if [ "$DISTR_FILE_STATUS" != "200" ]; then
 	exit 1;
 fi
 if [ "$OSNAME" == "centos6x64" ]; then
-	install_centos6_64
-fi
-logger "Unknown os name: $OSNAME"
-exit 1;
-function install_centos6_64() {
 	mkswap /dev/sda2
 	mkfs.ext4 /dev/sda1
 	mount /dev/sda1 /mnt
@@ -55,8 +50,10 @@ function install_centos6_64() {
 	sed -i 's/GATEWAY=0.0.0.0/SERVER_GATEWAY=$SERVER_IP' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
 	sed -i 's/HWADDR=0.0.0.0/HWADDR=$ETH0_MAC' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
 	grub-install /dev/sda1 --root-directory=/mnt
-}
-
+	exit 0;
+fi
+logger "Unknown os name: $OSNAME"
+exit 1;
 #
 # Configure internal network
 # dhclient eth1 -r
