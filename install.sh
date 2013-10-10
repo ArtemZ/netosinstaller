@@ -7,8 +7,7 @@ ETH0_MAC=`cat /sys/class/net/eth0/address`
 ETH1_MAC=`cat /sys/class/net/eth1/address`
 DISTR_URL="http://$DISTR_SERVER:4567/config/$ETH1_MAC?username=artemz&password=123456"
 
-wget http://$DISTR_SERVER/installer/disk-formatter.sh -O /tmp/disk_formatter.sh
-. /tmp/disk_formatter.sh
+
 #Server_IP=`ifconfig eth1|grep inet|head -1|sed 's/\:/ /'|awk '{print $3}'`
 DISTR_CONFIG_STATUS=`curl -s --head -w %{http_code} $DISTR_URL -o /dev/null`
 if [ "$DISTR_CONFIG_STATUS" == "403" ]; then
@@ -41,8 +40,10 @@ if [ "$DISTR_FILE_STATUS" != "200" ]; then
 	exit 1;
 fi
 if [ "$OSNAME" == "centos6x64" ]; then
+	wget http://$DISTR_SERVER/installer/disk-formatter.sh -O /tmp/disk_formatter.sh
+	. /tmp/disk_formatter.sh
 	mkswap /dev/sda2
-	mkfs.ext4 /dev/sda1
+	mkfs.ext3 /dev/sda1
 	mount /dev/sda1 /mnt
 	wget $DISTR_FILE_URL -O /mnt/centos.tar.gz
 	cd /; tar xzf /mnt/centos.tar.gz
