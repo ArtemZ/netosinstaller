@@ -46,17 +46,13 @@ if [ "$OSNAME" == "centos6x64" ]; then
 	mount /dev/sda1 /mnt
 	wget $DISTR_FILE_URL -O /mnt/centos.tar.gz
 	cd /; tar xzf /mnt/centos.tar.gz
-	sed -i 's/IPADDR=0.0.0.0/IPADDR=$SERVER_IP' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
-	sed -i 's/GATEWAY=0.0.0.0/SERVER_GATEWAY=$SERVER_IP' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
-	sed -i 's/HWADDR=0.0.0.0/HWADDR=$ETH0_MAC' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
-	grub-install /dev/sda1 --root-directory=/mnt
+	sed -i 's/IPADDR=0.0.0.0/IPADDR=$SERVER_IP/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
+	sed -i 's/GATEWAY=0.0.0.0/SERVER_GATEWAY=$SERVER_IP/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
+	sed -i 's/HWADDR=0.0.0.0/HWADDR=$ETH0_MAC/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
+	grub-install.unsupported /dev/sda1 --root-directory=/mnt
 	exit 0;
+else
+	logger "Unknown os name: $OSNAME"
+	exit 1;
 fi
-logger "Unknown os name: $OSNAME"
-exit 1;
-#
-# Configure internal network
-# dhclient eth1 -r
-# dhclient eth1
-
 
