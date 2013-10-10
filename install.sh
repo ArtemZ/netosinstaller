@@ -23,7 +23,7 @@ if [ "$DISTR_CONFIG_STATUS" != "200" ]; then
 	exit 1;
 fi
 
-wget -O /tmp/config.sh "http://$DISTR_SERVER:4567/config/$ETH1_MAC?username=&password="
+wget -O /tmp/config.sh $DISTR_URL
 . /tmp/config.sh
 if [ -z "$NETMASK" ]; then
 	logger "Configuration for mac $ETH1_MAC was not found on distr server $DISTR_SERVER"
