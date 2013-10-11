@@ -50,7 +50,7 @@ if [ "$OSNAME" == "centos6x64" ]; then
 	sed -i 's/IPADDR=0.0.0.0/IPADDR=$SERVER_IP/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
 	sed -i 's/GATEWAY=0.0.0.0/SERVER_GATEWAY=$SERVER_IP/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
 	sed -i 's/HWADDR=0.0.0.0/HWADDR=$ETH0_MAC/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
-	grub-install.unsupported /dev/sda1 --root-directory=/mnt
+	grub-install.unsupported /dev/sda --root-directory=/mnt
 	exit 0;
 else
 	logger "Unknown os name: $OSNAME"
