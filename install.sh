@@ -57,3 +57,5 @@ else
 	exit 1;
 fi
 
+#Sending reinstallation report
+curl -d "username=artemz&password=123456&status=true&msg=ok" http://$DISTR_SERVER:4567/reinstall/$ETH1_MAC
