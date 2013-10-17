@@ -3,8 +3,8 @@
 #. disk_formatter.sh
 #. config.sh
 DISTR_SERVER=192.168.1.100
-ETH0_MAC=`cat /sys/class/net/eth0/address`
-ETH1_MAC=`cat /sys/class/net/eth1/address`
+ETH0_MAC=`cat /sys/class/net/eth0/address | tr '[:upper:]' '[:lower:]' `
+ETH1_MAC=`cat /sys/class/net/eth1/address | tr '[:upper:]' '[:lower:]' `
 DISTR_URL="http://$DISTR_SERVER:4567/config/$ETH1_MAC?username=artemz&password=123456"
 
 
