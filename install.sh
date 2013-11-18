@@ -6,7 +6,14 @@ DISTR_SERVER=192.168.1.100
 ETH0_MAC=`cat /sys/class/net/eth0/address | tr '[:upper:]' '[:lower:]' `
 ETH1_MAC=`cat /sys/class/net/eth1/address | tr '[:upper:]' '[:lower:]' `
 DISTR_URL="http://$DISTR_SERVER:4567/config/$ETH1_MAC?username=artemz&password=123456"
-
+BLOCK_DEVICE=
+if [ -r /dev/vda ]; then
+	BLOCK_DEVICE=vda
+elif [ -r /dev/sda ]; then
+	BLOCK_DEVICE=sda
+elif [ -r /dev/hda ]; then
+	BLOCK_DEVICE=hda
+fi
 
 #Server_IP=`ifconfig eth1|grep inet|head -1|sed 's/\:/ /'|awk '{print $3}'`
 DISTR_CONFIG_STATUS=`curl -s --head -w %{http_code} $DISTR_URL -o /dev/null`
@@ -42,15 +49,21 @@ fi
 if [ "$OSNAME" == "centos6x64" ]; then
 	wget http://$DISTR_SERVER/installer/disk-formatter.sh -O /tmp/disk_formatter.sh
 	. /tmp/disk_formatter.sh
-	mkswap /dev/sda2
-	mkfs.ext3 /dev/sda1
-	mount /dev/sda1 /mnt
+	mkswap /dev/"$BLOCK_DEVICE"2
+	mkfs.ext3 /dev/"$BLOCK_DEVICE"1
+	mount /dev/"$BLOCK_DEVICE"1 /mnt
 	wget $DISTR_FILE_URL -O /mnt/centos.tar.gz
 	cd /; tar xzf /mnt/centos.tar.gz
 	sed -i 's/IPADDR=0.0.0.0/IPADDR=$SERVER_IP/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
 	sed -i 's/GATEWAY=0.0.0.0/SERVER_GATEWAY=$SERVER_IP/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
 	sed -i 's/HWADDR=0.0.0.0/HWADDR=$ETH0_MAC/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
-	grub-install.unsupported /dev/sda --root-directory=/mnt
+	grub-install.unsupported /dev/"$BLOCK_DEVICE" --root-directory=/mnt
+elif [ "$OSNAME" == "win2008r2" ]; then
+	wget http://$DISTR_SERVER/os/win2008.img.gz -O- | gunzip -c | dd of=/dev/"$BLOCK_DEVICE" conv=sync,noerror bs=64K
+	mount /dev/"$BLOCK_DEVICE"1 /mnt
+	sed -i 's/<Value>SomePassword123<\/Value>/<Value>$OSPASSWORD<\/Value>/g' /mnt/Autounattend.xml
+	sed -i 's/>94.242.233.61/24</<Value>$SERVER_IP<\/Value>/g' /mnt/Autounattend.xml
+	sed -i 's/<NextHopAddress>94.242.221.1<\/NextHopAddress>/<NextHopAddress>$SERVER_GATEWAY<\/NextHopAddress>/g' /mnt/Autounattend.xml
 else
 	logger "Unknown os name: $OSNAME"
 	exit 1;
