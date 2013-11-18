@@ -40,13 +40,14 @@ if [ -z "$OSNAME" ]; then
 	logger "OSNAME is not specified in configuration"
 	exit 1;
 fi
-DISTR_FILE_URL="http://$DISTR_SERVER/os/$OSNAME.tar.gz"
-DISTR_FILE_STATUS=`curl -s --head -w %{http_code} $DISTR_FILE_URL -o /dev/null`
-if [ "$DISTR_FILE_STATUS" != "200" ]; then
-	logger "Error accessing distribution file: $DISTR_FILE_STATUS"
-	exit 1;
-fi
+
 if [ "$OSNAME" == "centos6x64" ]; then
+	DISTR_FILE_URL="http://$DISTR_SERVER/os/$OSNAME.tar.gz"
+	DISTR_FILE_STATUS=`curl -s --head -w %{http_code} $DISTR_FILE_URL -o /dev/null`
+	if [ "$DISTR_FILE_STATUS" != "200" ]; then
+		logger "Error accessing distribution file: $DISTR_FILE_STATUS"
+		exit 1;
+	fi
 	wget http://$DISTR_SERVER/installer/disk-formatter.sh -O /tmp/disk_formatter.sh
 	. /tmp/disk_formatter.sh
 	mkswap /dev/"$BLOCK_DEVICE"2
