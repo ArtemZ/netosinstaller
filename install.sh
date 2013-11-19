@@ -60,7 +60,10 @@ if [ "$OSNAME" == "centos6x64" ]; then
 	sed -i 's/HWADDR=0.0.0.0/HWADDR=$ETH0_MAC/g' /mnt/etc/sysconfig/network-scripts/ifcfg-eth0
 	grub-install.unsupported /dev/"$BLOCK_DEVICE" --root-directory=/mnt
 elif [ "$OSNAME" == "win2008r2" ]; then
-	wget http://$DISTR_SERVER/os/win2008.img.gz -O- | gunzip -c | dd of=/dev/"$BLOCK_DEVICE" conv=sync,noerror bs=64K
+	#wget http://$DISTR_SERVER/os/win2008.img.gz -O- | gunzip -c | dd of=/dev/"$BLOCK_DEVICE" conv=sync,noerror bs=64K
+	wget http://$DISTR_SERVER/os/win2008.img -O- > /dev/"$BLOCK_DEVICE"
+	#forcing partition reload
+	partprobe
 	mount /dev/"$BLOCK_DEVICE"1 /mnt
 	sed -i 's/<Value>SomePassword123<\/Value>/<Value>$OSPASSWORD<\/Value>/g' /mnt/Autounattend.xml
 	sed -i 's/>94.242.233.61/24</<Value>$SERVER_IP<\/Value>/g' /mnt/Autounattend.xml
