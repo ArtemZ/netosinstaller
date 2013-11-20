@@ -65,9 +65,9 @@ elif [ "$OSNAME" == "win2008r2" ]; then
 	#forcing partition reload
 	partprobe
 	mount /dev/"$BLOCK_DEVICE"1 /mnt
-	sed -i 's/<Value>SomePassword123<\/Value>/<Value>$OSPASSWORD<\/Value>/g' /mnt/Autounattend.xml
-	sed -i 's/>94.242.233.61/24</<Value>$SERVER_IP<\/Value>/g' /mnt/Autounattend.xml
-	sed -i 's/<NextHopAddress>94.242.221.1<\/NextHopAddress>/<NextHopAddress>$SERVER_GATEWAY<\/NextHopAddress>/g' /mnt/Autounattend.xml
+	sed -i 's/<Value>SomePassword123<\/Value>/<Value>'$PASSWORD'<\/Value>/g' /mnt/Autounattend.xml
+	sed -i 's/>94.242.233.61\/24</<Value>'$IPADDR'<\/Value>/g' /mnt/Autounattend.xml
+	sed -i 's/<NextHopAddress>94.242.221.1<\/NextHopAddress>/<NextHopAddress>'$GATEWAY'<\/NextHopAddress>/g' /mnt/Autounattend.xml
 else
 	logger "Unknown os name: $OSNAME"
 	exit 1;
